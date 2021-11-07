@@ -32,8 +32,10 @@ int
 {
 	if (ac < 5 || ac > 6)
 		return (-1);
-	if (prs_atoi(*(++av), &philo->nb_p) || prs_atoi(*(++av), &philo->td)
-			|| prs_atoi(*(++av), &philo->te) || prs_atoi(*(++av), &philo->ts))
+	if (prs_atoi(*(++av), &philo->nb_p) || philo->nb_p < 1
+			|| prs_atoi(*(++av), &philo->td) || philo->td <= 0
+			|| prs_atoi(*(++av), &philo->te) || philo->te < 0
+			|| prs_atoi(*(++av), &philo->ts) || philo->ts < 0)
 		return (-1);
 	if (ac == 6)
 	{

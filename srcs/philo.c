@@ -11,7 +11,7 @@ int	main(int ac, char **av)
 
 	if (philo_pars(&phil, ac, av))
 		return (write(1, "Error during parsing\n", 21) + philo_free(phil));
-	if (phil.must_eat && !philo.nb_e)
+	if (phil.must_eat && !phil.nb_e)
 		return (0);
 	return (0);
 }
