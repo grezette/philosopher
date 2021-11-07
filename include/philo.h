@@ -7,13 +7,15 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <sys/time.h>
+#include <stdbool.h>
 
 typedef struct	s_philo
 {
 	int			nb_p;
-	time_t		td;
-	time_t		te;
-	time_t		ts;
+	int			td;
+	int			te;
+	int			ts;
+	bool		must_eat;
 	int			nb_e;
 }				t_philo;
 
