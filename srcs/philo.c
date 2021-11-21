@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/21 20:39:29 by grezette          #+#    #+#             */
+/*   Updated: 2021/11/21 21:10:03 by grezette         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/philo.h"
 
 static int
@@ -8,8 +20,14 @@ static int
 	i = -1;
 	if (all_var->philo)
 		while (++i < all_var->arg.nb_p)
+		{
 			pthread_mutex_destroy(&all_var->philo[i].fork);
+			pthread_mutex_destroy(&all_var->philo[i].m_nb_ate);
+		}
 	pthread_mutex_destroy(&all_var->print);
+	pthread_mutex_destroy(&all_var->m_death);
+	pthread_mutex_destroy(&all_var->m_all_philo_ate);
+	pthread_mutex_destroy(&all_var->m_error);
 	free(all_var->philo);
 	return (0);
 }
@@ -22,7 +40,9 @@ long long int
 
 	if (gettimeofday(&now, NULL))
 	{
+		pthread_mutex_lock(&all_var->m_error);
 		all_var->error = true;
+		pthread_mutex_unlock(&all_var->m_error);
 		return (-1);
 	}
 	else
@@ -39,8 +59,12 @@ int
 	i = -1;
 	min = all_var->arg.nb_e;
 	while (++i < all_var->arg.nb_p)
+	{
+		pthread_mutex_lock(&all_var->philo[i].m_nb_ate);
 		if (min > all_var->philo[i].nb_philo_ate)
 			min = all_var->philo[i].nb_philo_ate;
+		pthread_mutex_unlock(&all_var->philo[i].m_nb_ate);
+	}
 	return (min);
 }
 

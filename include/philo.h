@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/21 20:41:17 by grezette          #+#    #+#             */
+/*   Updated: 2021/11/21 21:05:01 by grezette         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -28,6 +40,7 @@ typedef struct s_arg
 typedef struct s_philo
 {
 	int				thread_id;
+	pthread_mutex_t	m_nb_ate;
 	int				nb_philo_ate;
 	pthread_t		pthread;
 	void			*all_var;
@@ -39,6 +52,9 @@ typedef struct s_all_var
 {
 	t_arg			arg;
 	long long int	start;
+	pthread_mutex_t	m_death;
+	pthread_mutex_t	m_all_philo_ate;
+	pthread_mutex_t	m_error;
 	bool			death;
 	bool			all_philo_ate;
 	bool			error;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_parsing.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/11/21 20:39:41 by grezette          #+#    #+#             */
+/*   Updated: 2021/11/21 21:12:10 by grezette         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../include/philo.h"
 
 static int
@@ -44,6 +56,7 @@ static void
 		while (++i < nb_p && !all_var->error)
 		{
 			pthread_mutex_init(&all_var->philo[i].fork, NULL);
+			pthread_mutex_init(&all_var->philo[i].m_nb_ate, NULL);
 			all_var->philo[i].thread_id = i;
 			all_var->philo[i].nb_philo_ate = 0;
 			all_var->philo[i].all_var = all_var;
@@ -54,11 +67,15 @@ static void
 
 int	initialize(t_all_var *all_var)
 {
+	all_var->error = false;
 	all_var->philo = NULL;
 	all_var->start = this_moment(all_var);
 	if (all_var->error)
 		return (-1);
 	pthread_mutex_init(&all_var->print, NULL);
+	pthread_mutex_init(&all_var->m_death, NULL);
+	pthread_mutex_init(&all_var->m_all_philo_ate, NULL);
+	pthread_mutex_init(&all_var->m_error, NULL);
 	init_philos(all_var->arg.nb_p, all_var);
 	if (all_var->error)
 		return (-1);
