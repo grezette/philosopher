@@ -27,24 +27,62 @@ static int
 	return (0);
 }
 
+static void
+	init_philos(int nb_p, t_all_var *all_var)
+{
+	int	i;
+
+	i = -1;
+	all_var->philo = (t_philo *)malloc(sizeof(t_philo) * nb_p);
+	if (!all_var->philo)
+		all_var->error = true;
+	else
+	{
+		all_var->death = false;
+		all_var->all_philo_ate = false;
+		all_var->error = false;
+		while (++i < nb_p && !all_var->error)
+		{
+			pthread_mutex_init(&all_var->philo[i].fork, NULL);
+			all_var->philo[i].thread_id = i;
+			all_var->philo[i].nb_philo_ate = 0;
+			all_var->philo[i].all_var = all_var;
+			all_var->philo[i].last_meal = this_moment(all_var);
+		}
+	}
+}
+
+int	initialize(t_all_var *all_var)
+{
+	all_var->philo = NULL;
+	all_var->start = this_moment(all_var);
+	if (all_var->error)
+		return (-1);
+	pthread_mutex_init(&all_var->print, NULL);
+	init_philos(all_var->arg.nb_p, all_var);
+	if (all_var->error)
+		return (-1);
+	return (0);
+}
+
 int
-	philo_pars(t_philo *philo, int ac, char **av)
+	philo_pars(t_arg *arg, int ac, char **av)
 {
 	if (ac < 5 || ac > 6)
 		return (-1);
-	if (prs_atoi(*(++av), &philo->nb_p) || philo->nb_p < 1
-			|| prs_atoi(*(++av), &philo->td) || philo->td <= 0
-			|| prs_atoi(*(++av), &philo->te) || philo->te < 0
-			|| prs_atoi(*(++av), &philo->ts) || philo->ts < 0)
+	if (prs_atoi(*(++av), &arg->nb_p) || arg->nb_p < 1
+		|| prs_atoi(*(++av), &arg->td) || arg->td < 1
+		|| prs_atoi(*(++av), &arg->te) || arg->te < 0
+		|| prs_atoi(*(++av), &arg->ts) || arg->ts < 0)
 		return (-1);
 	if (ac == 6)
 	{
-		if (prs_atoi(*(++av), &philo->nb_e) || philo->nb_e < 0)
+		if (prs_atoi(*(++av), &arg->nb_e) || arg->nb_e < 0)
 			return (-1);
 		else
-			philo->must_eat = true;
+			arg->must_eat = true;
 	}
 	else
-		philo->must_eat = false;
+		arg->must_eat = false;
 	return (0);
 }
