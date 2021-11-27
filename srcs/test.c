@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ph_threads.c                                       :+:      :+:    :+:   */
+/*   test.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:21 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/27 21:07:15 by grezette         ###   ########.fr       */
+/*   Updated: 2021/11/27 23:06:17 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,19 +117,66 @@ activity(t_all_var *all_var, int i, char *str, long long int duration)
 	}
 }
 
-	void *
-forking(t_all_var *all_var, int i, int action)
+//	void *
+//forking(t_all_var *all_var, int i, int action)
+//{
+//	int	next;
+//	long long int now;
+//	long long int elapsed;
+//
+//	next = i + 1;
+//	elapsed = 0;
+//	if (i + 1 == all_var->arg.nb_p)
+//		next = 0;
+//	if (action == TAKE_FORK)
+//	{
+//	}
+//	else if (action == SLEEP)
+//	{
+//		if (i % 2)
+//			pthread_mutex_lock(&all_var->philo[i].fork);
+//		pthread_mutex_lock(&all_var->philo[next].fork);
+//		if (i % 2 == 0)
+//			pthread_mutex_lock(&all_var->philo[i].fork);
+//		all_var->philo[i].fork_available = true;
+//		all_var->philo[next].fork_available = true;
+//		pthread_mutex_unlock(&all_var->philo[i].fork);
+//		pthread_mutex_unlock(&all_var->philo[next].fork);
+//		activity(all_var, i, "is sleeping", all_var->arg.ts);
+//	}
+//	return (NULL);
+//}
+//
+	void
+*philosopher(void *var)
 {
-	int	next;
+	t_philo		*philo;
+	t_all_var	*all_var;
+	int 		i;
+	int		next;
+	long long int	elapsed;
 
+	philo = (t_philo *)var;
+	all_var = philo->all_var;
+	i = philo->thread_id;
+	elapsed = 0;
 	next = i + 1;
 	if (i + 1 == all_var->arg.nb_p)
 		next = 0;
-	if (action == TAKE_FORK)
+	pthread_mutex_lock(&all_var->m_all_philo_ate);
+	pthread_mutex_lock(&all_var->print);
+	ft_putnbr_fd(all_var->philo[i].last_meal - all_var->start, 1);
+	ft_putstr_fd(" ", 1);
+	ft_putnbr_fd(i + 1, 1);
+	ft_putstr_fd(" is thinking\n", 1);
+	pthread_mutex_unlock(&all_var->print);
+	pthread_mutex_unlock(&all_var->m_all_philo_ate);
+	if (i % 2 == 0)
+		usleep(10);
+	while (!le_z(all_var, false))
 	{
 		while (!le_z(all_var, false))
 		{
-			//printf("id : %d, diff : %lld\n", i + 1, this_moment(all_var) - all_var->start);
 			if (i % 2)
 				pthread_mutex_lock(&all_var->philo[i].fork);
 			pthread_mutex_lock(&all_var->philo[next].fork);
@@ -143,24 +190,46 @@ forking(t_all_var *all_var, int i, int action)
 				pthread_mutex_unlock(&all_var->philo[next].fork);
 				break ;
 			}
-			else
-			{
-		//	ft_putstr_fd("\n", 1);
-		//	ft_putnbr_fd(i + 1, 1);
-		//	ft_putstr_fd("\n", 1);
-				pthread_mutex_unlock(&all_var->philo[i].fork);
-				pthread_mutex_unlock(&all_var->philo[next].fork);
-				usleep((all_var->arg.td - (this_moment(all_var) - all_var->philo[i].last_meal)) / 10 );
-			//	usleep(10);
-			}
+			pthread_mutex_unlock(&all_var->philo[i].fork);
+			pthread_mutex_unlock(&all_var->philo[next].fork);
 		}
-//	if (le_z(all_var, false))
-//		return (NULL);
-		activity(all_var, i, "has taken a fork", 0);
-		activity(all_var, i, "has taken a fork", 0);
-	}
-	else if (action == SLEEP)
-	{
+		if (le_z(all_var, false))
+			return (NULL);
+		pthread_mutex_lock(&all_var->print);
+		ft_putnbr_fd(this_moment(all_var) - all_var->start, 1);
+		ft_putstr_fd(" ", 1);
+		ft_putnbr_fd(i + 1, 1);
+		ft_putstr_fd(" has taken a fork\n", 1);
+		ft_putnbr_fd(this_moment(all_var) - all_var->start, 1);
+		ft_putstr_fd(" ", 1);
+		ft_putnbr_fd(i + 1, 1);
+		ft_putstr_fd(" has taken a fork\n", 1);
+		pthread_mutex_lock(&all_var->philo[i].m_nb_ate);
+		all_var->philo[i].last_meal = this_moment(all_var);
+		all_var->philo[i].nb_philo_ate++;
+		pthread_mutex_unlock(&all_var->philo[i].m_nb_ate);
+		ft_putnbr_fd(all_var->philo[i].last_meal - all_var->start, 1);
+		ft_putstr_fd(" ", 1);
+		ft_putnbr_fd(i + 1, 1);
+		ft_putstr_fd(" is eating\n", 1);
+		pthread_mutex_unlock(&all_var->print);
+		if (le_z(all_var, false))
+			return (NULL);
+		elapsed = this_moment(all_var) - all_var->philo[i].last_meal;
+		while (elapsed < all_var->arg.te && !le_z(all_var, true))
+		{
+			usleep(all_var->arg.te / 5);
+			elapsed = this_moment(all_var) - all_var->philo[i].last_meal;
+		}
+		elapsed = 0;
+		if (le_z(all_var, false))
+			return (NULL);
+		pthread_mutex_lock(&all_var->print);
+		ft_putnbr_fd(all_var->philo[i].last_meal + all_var->arg.te - all_var->start, 1);
+		ft_putstr_fd(" ", 1);
+		ft_putnbr_fd(i + 1, 1);
+		ft_putstr_fd(" is sleeping\n", 1);
+		pthread_mutex_unlock(&all_var->print);
 		if (i % 2)
 			pthread_mutex_lock(&all_var->philo[i].fork);
 		pthread_mutex_lock(&all_var->philo[next].fork);
@@ -170,48 +239,21 @@ forking(t_all_var *all_var, int i, int action)
 		all_var->philo[next].fork_available = true;
 		pthread_mutex_unlock(&all_var->philo[i].fork);
 		pthread_mutex_unlock(&all_var->philo[next].fork);
-		activity(all_var, i, "is sleeping", all_var->arg.ts);
-	}
-	return (NULL);
-}
+		if (le_z(all_var, false))
+			return (NULL);
+		elapsed = this_moment(all_var) - all_var->philo[i].last_meal - all_var->arg.te;
+		while (elapsed < all_var->arg.ts && !le_z(all_var, true))
+		{
+			usleep(all_var->arg.ts / 5);
+			elapsed = this_moment(all_var) - all_var->philo[i].last_meal - all_var->arg.te;
+		}
+		pthread_mutex_lock(&all_var->print);
+		ft_putnbr_fd(all_var->philo[i].last_meal + all_var->arg.te + all_var->arg.ts - all_var->start, 1);
+		ft_putstr_fd(" ", 1);
+		ft_putnbr_fd(i + 1, 1);
+		ft_putstr_fd(" is thinking\n", 1);
+		pthread_mutex_unlock(&all_var->print);
 
-	void
-*philosopher(void *var)
-{
-	t_philo		*philo;
-	t_all_var	*all_var;
-
-	philo = (t_philo *)var;
-	all_var = philo->all_var;
-	pthread_mutex_lock(&all_var->m_all_philo_ate);
-	pthread_mutex_unlock(&all_var->m_all_philo_ate);
-	//	pthread_mutex_lock(&all_var->print);
-	//	printf("philo %d : %lld\nDiff : %lld\n\n", philo->thread_id + 1, philo->last_meal, this_moment(all_var) - all_var->start);
-	//	pthread_mutex_unlock(&all_var->print);
-	while (!le_z(all_var, false))
-	{
-		//pthread_mutex_lock(&all_var->print);
-		//printf("philo %d : %lld\nDiff : %lld\n\n", philo->thread_id + 1, philo->last_meal, this_moment(all_var) - all_var->start);
-		//pthread_mutex_unlock(&all_var->print);
-		activity(all_var, philo->thread_id, "is thinking", 0);
-		//		pthread_mutex_lock(&all_var->print);
-		//	ft_putstr_fd("\nCHECK ", 1);
-		//	ft_putnbr_fd(this_moment(all_var) - all_var->start, 1);
-		//	ft_putstr_fd(" ", 1);
-		//	ft_putnbr_fd(philo->thread_id + 1, 1);
-		//	ft_putstr_fd("\n", 1);
-		//	pthread_mutex_unlock(&all_var->print);
-		if (all_var->arg.nb_p == 1)
-			break ;
-		if (le_z(all_var, false))
-			break ;
-		forking(all_var, philo->thread_id, TAKE_FORK);
-		if (le_z(all_var, false))
-			break ;
-		activity(all_var, philo->thread_id, "is eating", all_var->arg.te);
-		if (le_z(all_var, false))
-			break ;
-		forking(all_var, philo->thread_id, SLEEP);
 	}
 	return (NULL);
 }
@@ -299,7 +341,12 @@ principal_algo(t_all_var *all_var)
 				pthread_mutex_lock(&all_var->m_death);
 				all_var->death = true;
 				pthread_mutex_unlock(&all_var->m_death);
-				activity(all_var, i, "died", 0);
+				pthread_mutex_lock(&all_var->print);
+				ft_putnbr_fd(this_moment(all_var) - all_var->start, 1);
+				ft_putstr_fd(" ", 1);
+				ft_putnbr_fd(i + 1, 1);
+				ft_putstr_fd(" died\n", 1);
+				pthread_mutex_unlock(&all_var->print);
 				break ;
 			}
 			pthread_mutex_unlock(&all_var->philo[i].m_nb_ate);

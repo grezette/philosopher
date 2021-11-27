@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:41 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/27 15:23:59 by grezette         ###   ########.fr       */
+/*   Updated: 2021/11/27 18:17:37 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ static void
 			all_var->philo[i].thread_id = i;
 			all_var->philo[i].nb_philo_ate = 0;
 			all_var->philo[i].all_var = all_var;
-			all_var->philo[i].last_meal = this_moment(all_var);
 		}
 	}
 }
@@ -70,7 +69,6 @@ int	initialize(t_all_var *all_var)
 {
 	all_var->error = false;
 	all_var->philo = NULL;
-	all_var->start = this_moment(all_var);
 	if (all_var->error)
 		return (-1);
 	pthread_mutex_init(&all_var->print, NULL);

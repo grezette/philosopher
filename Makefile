@@ -1,7 +1,7 @@
 NAME 	= philo
 
 SRCS 	=	srcs/philo.c \
-			srcs/ph_threads.c \
+			srcs/test.c \
 			srcs/philo_parsing.c
 
 OBJS 	= $(SRCS:.c=.o)
