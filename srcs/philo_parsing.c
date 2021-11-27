@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:41 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/21 21:12:10 by grezette         ###   ########.fr       */
+/*   Updated: 2021/11/27 15:23:59 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static void
 		{
 			pthread_mutex_init(&all_var->philo[i].fork, NULL);
 			pthread_mutex_init(&all_var->philo[i].m_nb_ate, NULL);
+			all_var->philo[i].fork_available = true;
 			all_var->philo[i].thread_id = i;
 			all_var->philo[i].nb_philo_ate = 0;
 			all_var->philo[i].all_var = all_var;

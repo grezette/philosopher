@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:29 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/21 21:10:03 by grezette         ###   ########.fr       */
+/*   Updated: 2021/11/27 15:26:57 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ long long int
 		return (-1);
 	}
 	else
-		time = now.tv_sec * 1000 + now.tv_usec / 1000;
+		time = now.tv_sec * 1000000 + now.tv_usec;
 	return (time);
 }
 

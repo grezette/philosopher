@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:41:17 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/21 21:05:01 by grezette         ###   ########.fr       */
+/*   Updated: 2021/11/27 15:24:13 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_philo
 	pthread_t		pthread;
 	void			*all_var;
 	pthread_mutex_t	fork;
+	bool		fork_available;
 	long long int	last_meal;
 }					t_philo;
 
