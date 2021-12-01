@@ -46,7 +46,7 @@ long long int
 		return (-1);
 	}
 	else
-		time = now.tv_sec * 1000000 + now.tv_usec;
+		time = now.tv_sec * 1000 + now.tv_usec / 1000;
 	return (time);
 }
 
