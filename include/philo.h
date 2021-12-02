@@ -21,12 +21,6 @@
 # include <sys/time.h>
 # include <stdbool.h>
 
-enum e_philo_state
-{
-	TAKE_FORK,
-	SLEEP
-};
-
 typedef struct s_arg
 {
 	int			nb_p;
@@ -45,7 +39,7 @@ typedef struct s_philo
 	pthread_t		pthread;
 	void			*all_var;
 	pthread_mutex_t	fork;
-	bool		fork_available;
+	bool			fork_available;
 	long long int	last_meal;
 }					t_philo;
 
@@ -75,6 +69,7 @@ int				principal_algo(t_all_var *all_var);
 /*Utils*/
 
 int				min_nb_eat(t_all_var *all_var);
+bool			le_z(t_all_var *all_var, bool just_error);
 long long int	this_moment(t_all_var *all_var);
 
 #endif

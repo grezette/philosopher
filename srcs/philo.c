@@ -12,6 +12,36 @@
 
 #include "../include/philo.h"
 
+bool
+	le_z(t_all_var *all_var, bool just_error)
+{
+	if (!just_error)
+	{
+		pthread_mutex_lock(&all_var->m_death);
+		if (all_var->death)
+		{
+			pthread_mutex_unlock(&all_var->m_death);
+			return (true);
+		}
+		pthread_mutex_unlock(&all_var->m_death);
+		pthread_mutex_lock(&all_var->m_all_philo_ate);
+		if (all_var->all_philo_ate)
+		{
+			pthread_mutex_unlock(&all_var->m_all_philo_ate);
+			return (true);
+		}
+		pthread_mutex_unlock(&all_var->m_all_philo_ate);
+	}
+	pthread_mutex_lock(&all_var->m_error);
+	if (all_var->error)
+	{
+		pthread_mutex_unlock(&all_var->m_error);
+		return (true);
+	}
+	pthread_mutex_unlock(&all_var->m_error);
+	return (false);
+}
+
 static int
 	philo_free(t_all_var *all_var)
 {
@@ -19,11 +49,13 @@ static int
 
 	i = -1;
 	if (all_var->philo)
+	{
 		while (++i < all_var->arg.nb_p)
 		{
 			pthread_mutex_destroy(&all_var->philo[i].fork);
 			pthread_mutex_destroy(&all_var->philo[i].m_nb_ate);
 		}
+	}
 	pthread_mutex_destroy(&all_var->print);
 	pthread_mutex_destroy(&all_var->m_death);
 	pthread_mutex_destroy(&all_var->m_all_philo_ate);
