@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:41 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/27 18:17:37 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/03 20:23:11 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int
 		|| prs_atoi(*(++av), &arg->te) || arg->te < 0
 		|| prs_atoi(*(++av), &arg->ts) || arg->ts < 0)
 		return (-1);
+	
 	if (ac == 6)
 	{
 		if (prs_atoi(*(++av), &arg->nb_e) || arg->nb_e < 0)

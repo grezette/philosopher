@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:21 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/27 21:07:15 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/03 20:27:33 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ static void
 	long long int	elapsed;
 
 	elapsed = 0;
-	pthread_mutex_lock(&all_var->print);
 	if ((str[0] == 'd' && !le_z(all_var, true)) || !le_z(all_var, false))
 	{
 		if (str[3] == 'e')
@@ -30,16 +29,17 @@ static void
 			pthread_mutex_unlock(&all_var->philo[i].m_nb_ate);
 		}
 		now = this_moment(all_var);
+		pthread_mutex_lock(&all_var->print);
 		printf("%lld %d %s\n", now - all_var->start, i + 1, str);
 		pthread_mutex_unlock(&all_var->print);
-		while (elapsed < duration && !le_z(all_var, false))
+		while (elapsed < (duration) && !le_z(all_var, false))
 		{
-			usleep(duration / 10);
+			usleep(duration * 100);
 			elapsed = this_moment(all_var) - now;
+			//printf("elapsed: %lld\n", elapsed);
+			//printf("duration: %lld\n", duration);
 		}
 	}
-	else
-		pthread_mutex_unlock(&all_var->print);
 }
 
 static void
@@ -65,7 +65,6 @@ static void
 		}
 		pthread_mutex_unlock(&all_var->philo[i].fork);
 		pthread_mutex_unlock(&all_var->philo[next].fork);
-		usleep(10);
 	}
 	return (NULL);
 }
