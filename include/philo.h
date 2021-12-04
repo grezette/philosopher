@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:41:17 by grezette          #+#    #+#             */
-/*   Updated: 2021/11/27 15:24:13 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/04 15:29:08 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int				initialize(t_all_var *all_var);
 
 /*Main Algo*/
 
-int				principal_algo(t_all_var *all_var);
+void			principal_algo(t_all_var *all_var);
 
 /*Utils*/
 

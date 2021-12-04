@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:21 by grezette          #+#    #+#             */
-/*   Updated: 2021/12/03 20:27:33 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/04 15:57:10 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ static void
 		pthread_mutex_unlock(&all_var->print);
 		while (elapsed < (duration) && !le_z(all_var, false))
 		{
-			usleep(duration * 100);
+			usleep(duration / 10);
 			elapsed = this_moment(all_var) - now;
-			//printf("elapsed: %lld\n", elapsed);
-			//printf("duration: %lld\n", duration);
 		}
 	}
 }
@@ -47,22 +45,16 @@ static void
 {
 	if (next == all_var->arg.nb_p)
 		next = 0;
-	while (!le_z(all_var, false))
+	if (!action)
 	{
-		if (i % 2)
+		if (i & 1)
 			pthread_mutex_lock(&all_var->philo[i].fork);
 		pthread_mutex_lock(&all_var->philo[next].fork);
-		if (i % 2 == 0)
+		if (!(i & 1))
 			pthread_mutex_lock(&all_var->philo[i].fork);
-		if (all_var->philo[i].fork_available != action
-			&& all_var->philo[next].fork_available != action)
-		{
-			all_var->philo[i].fork_available = action;
-			all_var->philo[next].fork_available = action;
-			pthread_mutex_unlock(&all_var->philo[i].fork);
-			pthread_mutex_unlock(&all_var->philo[next].fork);
-			break ;
-		}
+	}
+	else
+	{
 		pthread_mutex_unlock(&all_var->philo[i].fork);
 		pthread_mutex_unlock(&all_var->philo[next].fork);
 	}
@@ -77,6 +69,8 @@ static void
 
 	philo = (t_philo *)var;
 	all_var = philo->all_var;
+	if (philo->thread_id % 2)
+		usleep(all_var->arg.te / 2);
 	while (!le_z(all_var, false))
 	{
 		activity(all_var, philo->thread_id, "is thinking", 0);
@@ -88,10 +82,10 @@ static void
 		activity(all_var, philo->thread_id, "has taken a fork", 0);
 		activity(all_var, philo->thread_id, "has taken a fork", 0);
 		if (le_z(all_var, false))
-			break ;
+			return (forking(all_var, philo->thread_id, true, philo->thread_id + 1));
 		activity(all_var, philo->thread_id, "is eating", all_var->arg.te);
 		if (le_z(all_var, false))
-			break ;
+			return (forking(all_var, philo->thread_id, true, philo->thread_id + 1));
 		forking(all_var, philo->thread_id, true, philo->thread_id + 1);
 		activity(all_var, philo->thread_id, "is sleeping", all_var->arg.ts);
 	}
@@ -103,7 +97,7 @@ static int
 {
 	pthread_mutex_lock(&all_var->philo[i].m_nb_ate);
 	if ((this_moment(all_var) - all_var->philo[i].last_meal)
-		> all_var->arg.td && !le_z(all_var, true))
+		> all_var->arg.td  && !le_z(all_var, true))
 	{
 		pthread_mutex_unlock(&all_var->philo[i].m_nb_ate);
 		pthread_mutex_lock(&all_var->m_death);
@@ -124,7 +118,7 @@ static int
 	return (0);
 }
 
-int
+void
 	principal_algo(t_all_var *all_var)
 {
 	int			i;
@@ -133,8 +127,12 @@ int
 	i = -1;
 	while (++i < all_var->arg.nb_p)
 		all_var->philo[i].last_meal = all_var->start;
+	i = -2;
+	while ((i += 2) < all_var->arg.nb_p)
+		pthread_create(&all_var->philo[i].pthread, NULL, philosopher,
+			&all_var->philo[i]);
 	i = -1;
-	while (++i < all_var->arg.nb_p)
+	while ((i += 2) < all_var->arg.nb_p)
 		pthread_create(&all_var->philo[i].pthread, NULL, philosopher,
 			&all_var->philo[i]);
 	while (!le_z(all_var, false))
@@ -147,5 +145,4 @@ int
 	i = all_var->arg.nb_p;
 	while (--i >= 0)
 		pthread_join(all_var->philo[i].pthread, NULL);
-	return (0);
 }
