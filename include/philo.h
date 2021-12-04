@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:41:17 by grezette          #+#    #+#             */
-/*   Updated: 2021/12/04 15:29:08 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/04 20:23:01 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_philo
 	pthread_mutex_t	m_nb_ate;
 	int				nb_philo_ate;
 	pthread_t		pthread;
-	void			*all_var;
+	void			*var;
 	pthread_mutex_t	fork;
 	bool			fork_available;
 	long long int	last_meal;
@@ -64,7 +64,7 @@ int				initialize(t_all_var *all_var);
 
 /*Main Algo*/
 
-void			principal_algo(t_all_var *all_var);
+void			principal_algo(t_all_var *all_var, int i);
 
 /*Utils*/
 

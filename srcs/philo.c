@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:29 by grezette          #+#    #+#             */
-/*   Updated: 2021/12/04 16:15:54 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/04 20:22:42 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,6 @@ int
 	return (min);
 }
 
-void __attribute__((destructor)) lol() {
-	while (1) {};
-}
-
 int
 	main(int ac, char **av)
 {
@@ -115,7 +111,7 @@ int
 		return (0);
 	if (initialize(&all_var))
 		return (philo_free(&all_var));
-	principal_algo(&all_var);
+	principal_algo(&all_var, 0);
 	philo_free(&all_var);
 	return (0);
 }

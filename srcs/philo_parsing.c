@@ -6,7 +6,7 @@
 /*   By: grezette <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 20:39:41 by grezette          #+#    #+#             */
-/*   Updated: 2021/12/03 20:23:11 by grezette         ###   ########.fr       */
+/*   Updated: 2021/12/04 19:07:27 by grezette         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void
 			all_var->philo[i].fork_available = true;
 			all_var->philo[i].thread_id = i;
 			all_var->philo[i].nb_philo_ate = 0;
-			all_var->philo[i].all_var = all_var;
+			all_var->philo[i].var = all_var;
 		}
 	}
 }
@@ -91,7 +91,6 @@ int
 		|| prs_atoi(*(++av), &arg->te) || arg->te < 0
 		|| prs_atoi(*(++av), &arg->ts) || arg->ts < 0)
 		return (-1);
-	
 	if (ac == 6)
 	{
 		if (prs_atoi(*(++av), &arg->nb_e) || arg->nb_e < 0)

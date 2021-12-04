@@ -10,7 +10,7 @@ RM		= 	rm -rf
 
 CC 		= gcc
 
-FLAGS 	= -Wall -Wextra -Werror -pthread -fsanitize=thread -g
+FLAGS 	= -Wall -Wextra -Werror -pthread #-fsanitize=thread -g
 
 all:		$(NAME)
 
